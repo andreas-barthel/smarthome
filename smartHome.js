@@ -109,7 +109,7 @@ var smartHome = {
 		ruleSet: [
 			{
 				id: '5000',
-				source: 'mymac',
+				source: '60:01:94:3c:c8:2b',
 				event: 'switchStateChanged',
 				action: 'toggleBoolean',
 				target: '2c:3a:e8:0b:58:ac'
