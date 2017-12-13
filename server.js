@@ -6,7 +6,7 @@ var smartHome = require('./smartHome.js');
 var server = http.createServer(function(request, response) {
 	// make some fun with request
 });
-server.listen(8080, '192.168.178.169', function() {});
+server.listen(smartHome.config.network.listeningPort, smartHome.config.network.listeningIp, function() {});
 
 wsServer = new WebSocketServer({
 	httpServer: server
