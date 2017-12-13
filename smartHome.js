@@ -2,7 +2,7 @@ var smartHome = {
 	
 	config: {
 		network: {
-			listeningIp: '192.168.178.169',
+			listeningIp: '192.168.178.201',
 			listeningPort: '80'
 		},
 
