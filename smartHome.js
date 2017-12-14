@@ -6,6 +6,13 @@ var smartHome = {
 			listeningPort: '80'
 		},
 
+		database: {
+			host: 'localhost',
+			name: 'smarthome',
+			username: 'smarthome',
+			password: 'smarthome'
+		},
+
 		allTargetClientsMustBeOnline: false
 	},
 	
