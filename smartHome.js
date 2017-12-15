@@ -41,6 +41,7 @@ var smartHome = {
 				if(err) throw err;
 				smartHome.database.connector = db;
 				smartHome.model.Rule = smartHome.database.connector.define('Rule', smartHome.model.Rule, {}, {});
+				smartHome.database.connector.sync();
 			});
 		}
 	},
