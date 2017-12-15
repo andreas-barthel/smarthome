@@ -28,7 +28,11 @@ wsServer.on('request', function(request) {
 				break;
 			
 			case 'event':
-				var rules = smartHome.rules.getRules(telegram.mac, telegram.event);
+				try {
+					var rules = smartHome.rules.getRules(telegram.mac, telegram.event);
+				} catch (err) {
+					console.log(err.message);
+				}
 				console.log('found rules: ' + rules.length);
 				for(var i=0; i<=rules.length-1; i++) {
 					var rule = rules[i];
