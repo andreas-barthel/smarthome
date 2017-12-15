@@ -138,9 +138,9 @@ var smartHome = {
 			return null;
 		},
 		
-		getRules: function(source, event) {
+		getRules: function(mysource, myevent) {
 			var rules = null;
-			smartHome.model.Rule.find({ source: source, event: event}, function(err, foundRules) {
+			smartHome.model.Rule.find({ source: mysource, event: myevent}, function(err, foundRules) {
 				if(err) throw err;
 				rules = foundRules;
 
