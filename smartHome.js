@@ -144,7 +144,7 @@ var smartHome = {
 				if(err) throw err;
 				console.log("no errors on db fetch")
 				rules = foundRules;
-				console.log("count: " foundRules.length);
+				console.log("count: " + foundRules.length);
 
 			});
 
