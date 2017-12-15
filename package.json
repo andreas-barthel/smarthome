@@ -1,0 +1,26 @@
+{
+  "name": "smarthome",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "mysql": "^2.15.0",
+    "orm": "^4.0.2",
+    "websocket": "^1.0.25"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreas-barthel/smarthome.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andreas-barthel/smarthome/issues"
+  },
+  "homepage": "https://github.com/andreas-barthel/smarthome#readme"
+}

@@ -3,6 +3,8 @@ var http = require('http');
 
 var smartHome = require('./smartHome.js');
 
+smartHome.database.connect();
+
 var server = http.createServer(function(request, response) {
 	// make some fun with request
 });

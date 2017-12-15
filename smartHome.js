@@ -1,20 +1,9 @@
+var myConfig = require('./config.js')
+var orm = require('orm');
+
 var smartHome = {
 	
-	config: {
-		network: {
-			listeningIp: '192.168.178.201',
-			listeningPort: '80'
-		},
-
-		database: {
-			host: 'localhost',
-			name: 'smarthome',
-			username: 'smarthome',
-			password: 'smarthome'
-		},
-
-		allTargetClientsMustBeOnline: false
-	},
+	config: myConfig,
 	
 	templates: {
 		messages: {
@@ -38,6 +27,21 @@ var smartHome = {
 				return smartHome.templates.messages[action];
 			
 			return null;
+		}
+	},
+
+	model: {
+		Rule: require('./models/Rule.js')
+	},
+
+	database: {
+		connector: null,
+		connect: function() {
+			orm.connect("mysql://" + smartHome.config.database.username + ':' + smartHome.config.database.password + '@' + smartHome.config.database.host + '/' + smartHome.config.database.name, function(err, db) {
+				if(err) throw err;
+				smartHome.database.connector = db;
+				smartHome.model.Rule = smartHome.database.connector.define('Rule', smartHome.model.Rule, {}, {});
+			});
 		}
 	},
 	
@@ -134,12 +138,21 @@ var smartHome = {
 		},
 		
 		getRules: function(source, event) {
+			var rules = null;
+			smartHome.model.Rule.find({ source: source, event: event}, function(err, foundRules) {
+				if(err) throw err;
+				rules = foundRules;
+
+			});
+
+			/*
 			var rules = [];
 			for(var i=0; i <= smartHome.rules.ruleSet.length-1; i++) {
 				var rule = smartHome.rules.ruleSet[i];
 				if(rule.source == source && rule.event == event)
 					rules.push(rule);
 			}
+			*/
 			
 			return rules;
 		},
