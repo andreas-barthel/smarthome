@@ -37,7 +37,7 @@ wsServer.on('request', function(request) {
 							var target = smartHome.sessions.clients[rule.target];
 							if(target) {
 								console.log('target ' + rule.target + ' online');
-								smartHome.rules.processRule(rule.id);
+								smartHome.rules.processRule(rule);
 							} else {
 								console.log('target ' + rule.target + ' not online');
 							}

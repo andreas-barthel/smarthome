@@ -160,10 +160,9 @@ var smartHome = {
 			return rules;
 		},
 		
-		processRule: function(id) {
-			var rule = smartHome.rules.getRuleById(id);
+		processRule: function(rule) {
 			if(rule == null)
-				console.log('rule with id ' + id + ' not found');
+				console.log('rule invalid');
 			else {
 				var client = smartHome.sessions.clients[rule.target];
 				smartHome.net.sendMessage(client, rule.action);
