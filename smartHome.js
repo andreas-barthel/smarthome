@@ -138,14 +138,13 @@ var smartHome = {
 			return null;
 		},
 		
-		getRules: function(mysource, myevent) {
-			var rules = null;
+		getRules: function(mysource, myevent, cb) {
 			smartHome.model.Rule.find({ source: mysource, event: myevent}, function(err, foundRules) {
 				console.log("bla");
 				if(err) throw err;
 				console.log("no errors on db fetch")
-				rules = foundRules;
 				console.log("count: " + foundRules.length);
+				cb(foundRules);
 
 			});
 

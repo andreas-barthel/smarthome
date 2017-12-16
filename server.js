@@ -29,21 +29,22 @@ wsServer.on('request', function(request) {
 			
 			case 'event':
 				try {
-					var rules = smartHome.rules.getRules(telegram.mac, telegram.event);
+					smartHome.rules.getRules(telegram.mac, telegram.event, function(rules) {
+						console.log('found rules: ' + rules.length);
+						for(var i=0; i<=rules.length-1; i++) {
+							var rule = rules[i];
+							console.log('rule: source: ' + rule.source + ', event: ' + rule.event + ', action: ' + rule.action + ', target: ' + rule.target);
+							var target = smartHome.sessions.clients[rule.target];
+							if(target) {
+								console.log('target ' + rule.target + ' online');
+								smartHome.rules.processRule(rule.id);
+							} else {
+								console.log('target ' + rule.target + ' not online');
+							}
+						}
+					});
 				} catch (err) {
 					console.log(err.message);
-				}
-				console.log('found rules: ' + rules.length);
-				for(var i=0; i<=rules.length-1; i++) {
-					var rule = rules[i];
-					console.log('rule: source: ' + rule.source + ', event: ' + rule.event + ', action: ' + rule.action + ', target: ' + rule.target);
-					var target = smartHome.sessions.clients[rule.target];
-					if(target) {
-						console.log('target ' + rule.target + ' online');
-						smartHome.rules.processRule(rule.id);
-					} else {
-						console.log('target ' + rule.target + ' not online');
-					}
 				}
 				break;
 			
