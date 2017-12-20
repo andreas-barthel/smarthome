@@ -147,15 +147,6 @@ var smartHome = {
 				cb(foundRules);
 
 			});
-
-			/*
-			var rules = [];
-			for(var i=0; i <= smartHome.rules.ruleSet.length-1; i++) {
-				var rule = smartHome.rules.ruleSet[i];
-				if(rule.source == source && rule.event == event)
-					rules.push(rule);
-			}
-			*/
 			
 			return rules;
 		},

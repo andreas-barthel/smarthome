@@ -1,7 +1,7 @@
 var config = {
 
     network: {
-        listeningIp: '192.168.178.169',
+        listeningIp: '172.16.0.160',
         listeningPort: '80'
     },
 

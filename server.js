@@ -1,12 +1,27 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
+var fs = require('fs');
 
 var smartHome = require('./smartHome.js');
 
 smartHome.database.connect();
 
 var server = http.createServer(function(request, response) {
-	// make some fun with request
+	var serveUrl = request.url;
+	if(serveUrl === '/')
+		serveUrl = "/index.html";
+	try {
+		var site = fs.readFileSync('www' + serveUrl);
+		response.writeHead(200, {'Content-Type': 'text/html'});
+		response.end(site);
+	} catch(err) {
+		var error = fs.readFileSync('www/404.html');
+		response.writeHead(404, {'Content-Type' : 'text/html'});
+		response.end(error);
+	}
+		
+	
+
 });
 server.listen(smartHome.config.network.listeningPort, smartHome.config.network.listeningIp, function() {});
 
