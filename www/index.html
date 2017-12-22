@@ -2,9 +2,57 @@
 <html>
     <head>
         <title>bla bal</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+        <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+
+        <script src="/server.js"></script>
+        <script type="application/javascript">
+            $(function() {
+                client.websocket.init();
+            })
+        </script>
     </head>
 
+    <div id="wizardDialog" title="Configuration - Set Admin Account">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="wizardAdminName" class="text ui-widget-content ui-corner-all" />
+        <label for="password1">Password</label>
+        <input type="password" name="password1" id="wizardAdminPassword1" class="text ui-widget-content ui-corner-all" />
+        <label for="password2">Password Confirmation</label>
+        <input type="password" name="password2" id="wizardAdminPassword2" class="text ui-widget-content ui-corner-all" />
+    </div>
+
+    <div id="loginDialog" title="Login">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="loginName" class="text ui-widget-content ui-corner-all" />
+        <label for="password">Password</label>
+        <input type="password" name="password" id="loginPassword" class="text ui-widget-content ui-corner-all " />
+    </div>
+
     <body>
-        hallo welt
+        <div id="tabs">
+            <ul>
+                <li><a href="#devices">Online Devices</a></li>
+                <li><a href="#rules">Rules</a></li>
+            </ul>
+
+            <div id="devices">
+                Here a list of all online devices
+            </div>
+
+            <div id="rules">
+                <table id="rulesTable" class="display" cellspacing="0" width="100%">
+
+                </table>
+            </div>
+        </div>
     </body>
 </html>

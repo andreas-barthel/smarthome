@@ -18,7 +18,9 @@ var smartHome = {
 			BooleanState: {
 				type: 'BooleanState',
 				state: null
-			}
+			},
+
+			response: {type: 'response', action: null, value: null}
 			
 		},
 		
@@ -31,7 +33,25 @@ var smartHome = {
 	},
 
 	model: {
-		Rule: require('./models/Rule.js')
+		User: require('./models/User.js'),
+		Settings: require('./models/Settings.js'),
+		Rule: require('./models/Rule.js'),
+		Session: require('./models/Session.js')
+	},
+
+	settings: {
+		getConfig: function(searchName, cb) {
+			smartHome.model.Settings.find({name: searchName}, function(err, settings) {
+				if(err) throw err;
+				console.log('found settings: ' + settings.length);
+				if(settings.length == 1)
+					cb(settings[0]['name'], settings[0]['value'], settings[0]['option']);
+				if(settings.length == 0)
+					cb(null, null, null);
+				
+				// what if more than one setting with same name available?
+			});
+		}
 	},
 
 	database: {
@@ -41,13 +61,46 @@ var smartHome = {
 				if(err) throw err;
 				smartHome.database.connector = db;
 				smartHome.model.Rule = smartHome.database.connector.define('Rule', smartHome.model.Rule, {}, {});
+				smartHome.model.User = smartHome.database.connector.define('User', smartHome.model.User, {}, {});
+				smartHome.model.Settings = smartHome.database.connector.define('Settings', smartHome.model.Settings, {}, {});
+				smartHome.model.Session = smartHome.database.connector.define('Session', smartHome.model.Session, {}, {});
+				smartHome.model.Session.hasOne('user', smartHome.model.User);				
 				smartHome.database.connector.sync();
 			});
+		},
+
+		saveAdminAccount: function(name, password, cb) {
+			smartHome.model.User.create({id: 1, name: name, password: password, type: 'admin'}, function(err) {
+				if(!err)
+					smartHome.model.Settings.create({name: 'configState', value: 'true', option: 'none'}, function(err) {
+						cb(err);												
+					});
+				else
+					cb(err);
+				});
 		}
 	},
 	
 	sessions: {
 		clients: {
+			
+		},
+
+		login: function(name, password, cb) {
+			smartHome.model.User.find({name: name, password: password}, function(err, users) {
+				if(err) throw err;
+				
+				if(users.length > 1) {
+					cb('Error - Multiple User with same name');
+				} else if(users.length == 0) {
+					cb('Error - Invalid User');
+				} else {
+					var sid = new Date().getTime();
+					smartHome.model.Session.create({sid: sid, user: users[0]}, function(err) {
+						cb(err, sid);
+					});
+				}
+			});
 			
 		},
 		
@@ -94,17 +147,19 @@ var smartHome = {
 		},
 		
 		sendMessage: function(client, action) {
-			console.log('in sendMessage: client: ' + client + ', action: ' + action);
 			var messageTemplate = smartHome.templates.getMessageByAction(action);
-			console.log('messageTemplate: ' + messageTemplate);
 			
 			if(messageTemplate != null) {
 				var message = JSON.stringify(messageTemplate);
-				console.log('message: ' + message);
 				client.connection.sendUTF(message);
 				console.log('>>> ' + message);
 			}
 				
+		},
+
+		send: function(client, message) {
+			console.log('>>> ' + JSON.stringify(message));
+			client.sendUTF(JSON.stringify(message));
 		}
 	},
 	
@@ -118,32 +173,10 @@ var smartHome = {
 	},
 	
 	rules: {
-		ruleSet: [
-			{
-				id: '5000',
-				source: '60:01:94:3c:c8:2b',
-				event: 'switchStateChanged',
-				action: 'toggleBoolean',
-				target: '2c:3a:e8:0b:58:ac'
-			}
-		],
-		
-		getRuleById: function(id) {
-			for(var i=0; i<=smartHome.rules.ruleSet.length-1; i++) {
-				var rule = smartHome.rules.ruleSet[i];
-				if(rule.id == id)
-					return rule;
-			}
-			
-			return null;
-		},
 		
 		getRules: function(mysource, myevent, cb) {
 			smartHome.model.Rule.find({ source: mysource, event: myevent}, function(err, foundRules) {
-				console.log("bla");
 				if(err) throw err;
-				console.log("no errors on db fetch")
-				console.log("count: " + foundRules.length);
 				cb(foundRules);
 
 			});

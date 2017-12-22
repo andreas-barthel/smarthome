@@ -38,6 +38,45 @@ wsServer.on('request', function(request) {
 		console.log('<<< ' + message.utf8Data.replace('/\r\n/g', ''));
 		var telegram = smartHome.net.telegram.parse(message.utf8Data);
 		switch(telegram.type) {
+
+			case 'login':
+				smartHome.sessions.login(telegram.name, telegram.password, function(err, sid) {
+					var response = smartHome.templates.messages.response;					
+					response.action = 'login';					
+					if(err) {
+						response.value = {state: false, err: err};
+					} else {
+						response.value = {state: true, sid: sid};
+					}
+					smartHome.net.send(connection, response);
+				});
+				break;
+
+			case 'saveAdminAccount':
+					smartHome.database.saveAdminAccount(telegram.name, telegram.password, function(err){
+						if(err) throw err;
+
+						var response = smartHome.templates.messages.response;
+						response.action = 'saveAdminAccount';
+						response.value = 'OK';
+						smartHome.net.send(connection, response);
+					});
+				break;
+
+			case 'checkConfigState':
+				smartHome.settings.getConfig('configState', function(name, value, option) {
+					var response = smartHome.templates.messages.response;
+					response.action = 'checkConfigState';
+					if(name == null)
+						response.value = 'NO';
+					else
+						response.value = 'YES';
+					
+					smartHome.net.send(connection, response);
+					
+				});
+				break;
+
 			case 'register':
 				smartHome.sessions.register(telegram.mac, connection.socket.remoteAddress, telegram.hwClass, connection);
 				break;
@@ -45,16 +84,12 @@ wsServer.on('request', function(request) {
 			case 'event':
 				try {
 					smartHome.rules.getRules(telegram.mac, telegram.event, function(rules) {
-						console.log('found rules: ' + rules.length);
 						for(var i=0; i<=rules.length-1; i++) {
 							var rule = rules[i];
-							console.log('rule: source: ' + rule.source + ', event: ' + rule.event + ', action: ' + rule.action + ', target: ' + rule.target);
 							var target = smartHome.sessions.clients[rule.target];
 							if(target) {
-								console.log('target ' + rule.target + ' online');
 								smartHome.rules.processRule(rule);
 							} else {
-								console.log('target ' + rule.target + ' not online');
 							}
 						}
 					});
