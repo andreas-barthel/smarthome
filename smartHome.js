@@ -98,6 +98,7 @@ var smartHome = {
 			var clients = new Array();
 			for(var mac in smartHome.sessions.clients) {
 				clients.push(smartHome.sessions.clients[mac]);
+				delete clients[clients.length-1]['connection'];
 			}
 			//$.each(smartHome.sessions.clients, function(key, value) { // doesn't work
 			//	clients.push(value);
