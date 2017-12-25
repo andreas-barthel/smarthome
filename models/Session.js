@@ -1,6 +1,8 @@
-var Session = {
-    id: Number,
-    sid: String,
-};
+module.exports = function(db, cb) {
+    db.define("Session", {
+        id: Number,
+        sid: String,
+    });
 
-module.exports = Session;
+    db.models.Session.hasOne('user', db.models.User);	
+};

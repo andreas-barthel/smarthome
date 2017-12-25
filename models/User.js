@@ -1,8 +1,8 @@
-var User = {
-    id: Number,
-    name: String,
-    password: String,
-    type: ['admin', 'user']
+module.exports = function(db, cb) {
+    db.define("User", {
+        id: Number,
+        name: String,
+        password: String,
+        type: ['admin', 'user']
+    });
 };
-
-module.exports = User;

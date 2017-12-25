@@ -1,7 +1,7 @@
-var Settings = {
-    name: String,
-    value: String,
-    option: String
+module.exports = function(db, cb) {
+    db.define("Settings", {
+        name: String,
+        value: String,
+        option: String
+    })
 };
-
-module.exports = Settings;

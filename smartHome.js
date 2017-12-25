@@ -33,10 +33,10 @@ var smartHome = {
 	},
 
 	model: {
-		User: require('./models/User.js'),
-		Settings: require('./models/Settings.js'),
-		Rule: require('./models/Rule.js'),
-		Session: require('./models/Session.js')
+		User: null,
+		Settings: null,
+		Rule: null,
+		Session: null
 	},
 
 	settings: {
@@ -59,13 +59,20 @@ var smartHome = {
 		connect: function() {
 			orm.connect("mysql://" + smartHome.config.database.username + ':' + smartHome.config.database.password + '@' + smartHome.config.database.host + '/' + smartHome.config.database.name, function(err, db) {
 				if(err) throw err;
+
+				db.load('./models', function (err) {
+					smartHome.model.Rule = db.models.Rule;
+					smartHome.model.User = db.models.User;
+					smartHome.model.Session = db.models.Session;
+					smartHome.model.Settings = db.models.Settings;
+				});
+
+				//smartHome.model.Rule = smartHome.database.connector.define('Rule', smartHome.model.Rule, {}, {});
+				//smartHome.model.User = smartHome.database.connector.define('User', smartHome.model.User, {}, {});
+				//smartHome.model.Settings = smartHome.database.connector.define('Settings', smartHome.model.Settings, {}, {});
+				//smartHome.model.Session = smartHome.database.connector.define('Session', smartHome.model.Session, {}, {});
+				db.sync();
 				smartHome.database.connector = db;
-				smartHome.model.Rule = smartHome.database.connector.define('Rule', smartHome.model.Rule, {}, {});
-				smartHome.model.User = smartHome.database.connector.define('User', smartHome.model.User, {}, {});
-				smartHome.model.Settings = smartHome.database.connector.define('Settings', smartHome.model.Settings, {}, {});
-				smartHome.model.Session = smartHome.database.connector.define('Session', smartHome.model.Session, {}, {});
-				smartHome.model.Session.hasOne('user', smartHome.model.User);				
-				smartHome.database.connector.sync();
 			});
 		},
 
