@@ -18,6 +18,14 @@ var client = {
                 type: 'login',
                 name: null,
                 password: null
+            },
+
+            getOnlineDevices: {
+                type: 'getOnlineDevices'
+            },
+
+            getRules: {
+                type: 'getRules'
             }
         },
 
@@ -47,20 +55,37 @@ var client = {
 
             $('#tabs').tabs();
 
-            $('#rulesTable').DataTable({
-                searching: false,
-                columns: [
-                    {title: "Name"},
-                    {title: "Source"},
-                    {title: "Event"},
-                    {title: "Target"},
-                    {title: "Action"}
-                ]
+            $('#rulesTable').jqGrid({
+                datatype: 'local',
+                colNames: ['Name', 'Source', 'Event', 'Target', 'Action'],
+                colModel: [
+                    {name: 'name'},
+                    {name: 'source'},
+                    {name: 'event'},
+                    {name: 'target'},
+                    {name: 'action'}
+                ],
+                rowNum: 20,
+                caption: 'Rules',
+                width: 900
+            });
+
+            $('#onlineDevicesTable').jqGrid({
+                datatype: 'local',
+                colNames: ['IP', 'MAC', 'Hw-Class'],
+                colModel: [
+                    {name: 'ip'},
+                    {name: 'mac'},
+                    {name: 'hwClass'}
+                ],
+                rowNum: 20,
+                caption: 'Online Devices',
+                width: 900
             });
 
             client.websocket.connection = new WebSocket('ws://192.168.178.169');
             client.websocket.connection.onopen = client.websocket.onOpen;
-            client.websocket.connection.onmessage = client.websocket.onMessage;
+            client.websocket.connection.onmessage = client.websocket.onMessage;            
         },
 
         onOpen: function() {
@@ -176,6 +201,9 @@ var client = {
                             } else {
                                 if(!client.session.hasSession()) {
                                     client.session.start();
+                                } else {
+                                    client.websocket.connection.send(JSON.stringify(client.websocket.telegrams.getOnlineDevices));                                    
+                                    client.websocket.connection.send(JSON.stringify(client.websocket.telegrams.getRules));
                                 }
                             }
                             break;
@@ -187,6 +215,14 @@ var client = {
                                 var sid = telegram.value.sid;
                                 client.session.loginDialog.dialog('close');
                                 Cookies.set('sid', sid);
+                            break;
+
+                        case 'getOnlineDevices':
+                            $('#onlineDevicesTable')[0].addJSONData(telegram.value.devices);
+                            break;
+
+                        case 'getRules':
+                            $('#rulesTable')[0].addJSONData(telegram.value);
                             break;
                     }
                 break;

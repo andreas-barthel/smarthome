@@ -1,3 +1,5 @@
+//import connect from 'http2';
+
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 var fs = require('fs');
@@ -12,7 +14,10 @@ var server = http.createServer(function(request, response) {
 		serveUrl = "/index.html";
 	try {
 		var site = fs.readFileSync('www' + serveUrl);
-		response.writeHead(200, {'Content-Type': 'text/html'});
+		if(serveUrl.endsWith(".html"))
+			response.writeHead(200, {'Content-Type': 'text/html'});
+		else if(serveUrl.endsWith(".css"))
+			response.writeHead(200, {'Content-Type' : 'text/css'});
 		response.end(site);
 	} catch(err) {
 		var error = fs.readFileSync('www/404.html');
@@ -38,6 +43,25 @@ wsServer.on('request', function(request) {
 		console.log('<<< ' + message.utf8Data.replace('/\r\n/g', ''));
 		var telegram = smartHome.net.telegram.parse(message.utf8Data);
 		switch(telegram.type) {
+
+			case 'getRules':
+				smartHome.rules.getAllRules(function(rules) {
+					var response = smartHome.templates.messages.response;
+					response.action = 'getRules';
+					response.value = rules;
+					smartHome.net.send(connection, response);
+				});
+				break;
+
+			case 'getOnlineDevices':
+
+				var clients = smartHome.sessions.getClientsAsList();
+				var response = smartHome.templates.messages.response;
+				response.action = 'getOnlineDevices';
+				response.value = {state: true, devices: clients};
+				smartHome.net.send(connection, response);
+
+				break;
 
 			case 'login':
 				smartHome.sessions.login(telegram.name, telegram.password, function(err, sid) {

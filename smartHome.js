@@ -1,5 +1,6 @@
 var myConfig = require('./config.js')
 var orm = require('orm');
+var $ = require('jQuery');
 
 var smartHome = {
 	
@@ -91,6 +92,17 @@ var smartHome = {
 	sessions: {
 		clients: {
 			
+		},
+
+		getClientsAsList: function() {
+			var clients = new Array();
+			for(var mac in smartHome.sessions.clients) {
+				clients.push(smartHome.sessions.clients[mac]);
+			}
+			//$.each(smartHome.sessions.clients, function(key, value) { // doesn't work
+			//	clients.push(value);
+			//});
+			return clients;
 		},
 
 		login: function(name, password, cb) {
@@ -189,6 +201,12 @@ var smartHome = {
 			});
 			
 			return rules;
+		},
+
+		getAllRules: function(cb) {
+			smartHome.model.Rule.find(function(err, foundRules) {
+				cb(foundRules);
+			});
 		},
 		
 		processRule: function(rule) {

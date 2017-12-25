@@ -10,8 +10,14 @@
 
         <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
+        <!--
         <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+        -->
+        
+        <script src="jquery.jqGrid.min.js"></script>
+        <script src="i18n/grid.locale-en.js"></script>
+        <link rel="stylesheet" href="ui.jqgrid.css"/>
 
         <script src="/server.js"></script>
         <script type="application/javascript">
@@ -41,18 +47,17 @@
         <div id="tabs">
             <ul>
                 <li><a href="#devices">Online Devices</a></li>
-                <li><a href="#rules">Rules</a></li>
+                <li><a href="#rules">Rules</a></li>                
             </ul>
 
-            <div id="devices">
-                Here a list of all online devices
+            <div id="devices" width="100%">
+                <table id="onlineDevicesTable"></table>
             </div>
 
-            <div id="rules">
-                <table id="rulesTable" class="display" cellspacing="0" width="100%">
-
-                </table>
+            <div id="rules" width="100%">
+                <table id="rulesTable"></table>
             </div>
+
         </div>
     </body>
 </html>
