@@ -54,7 +54,7 @@ wsServer.on('request', function(request) {
 				forwardedTelegram.path = path;
 				forwardedTelegram.content = content;
 
-				smartHome.net.send(client, forwardedTelegram);
+				smartHome.net.send(client.connection, forwardedTelegram);
 				//console.log(JSON.stringify(forwardedTelegram));
 
 				break;
