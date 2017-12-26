@@ -49,6 +49,7 @@ wsServer.on('request', function(request) {
 				var content = telegram.content;
 				var targetDevice = telegram.targetDevice;
 				var client = smartHome.sessions.clients[targetDevice];
+				
 
 				var forwardedTelegram = smartHome.templates.messages.updateFile;
 				forwardedTelegram.path = path;
