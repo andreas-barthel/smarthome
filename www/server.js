@@ -1,9 +1,30 @@
 var client = {
+    test: {
+        readFile: function() {
+            var file = $('#uploadFile')[0];
+            fr = new FileReader();
+            fr.onload = function(e) {
+                var fileContent = fr.result;
+                console.log(fileContent);
+            };
+
+            fr.readAsText(file.files[0]);
+        }
+    },
+
     websocket: {
 
         connection: null,
 
         telegrams: {
+
+            fileToDevice: {
+                type: 'fileToDevice',
+                path: null,
+                content: null,
+                targetDevice: null
+            },
+
             checkConfigState: {
                 type: 'checkConfigState'
             },
@@ -186,6 +207,33 @@ var client = {
                 client.websocket.connection.send(JSON.stringify(telegram));
             });
 
+        }
+    },
+
+    devices: {
+        upload: function() {
+            var deviceMacId = $('#onlineDevicesTable').jqGrid('getGridParam', 'selrow');
+            var deviceMacRow = $('#onlineDevicesTable').jqGrid('getRowData', deviceMacId);
+            var deviceMac = deviceMacRow.mac;
+
+            var fileName = $('#uploadFileName').val();
+
+            var file = $('#uploadFile')[0];
+            var fileContent = null;
+            fr = new FileReader();
+            fr.onload = function(e) {
+                fileContent = fr.result;
+                //console.log(fileContent);
+
+                var telegram = client.websocket.telegrams.fileToDevice;
+                telegram.path = fileName;
+                telegram.content = fileContent;
+                telegram.targetDevice = deviceMac;
+
+                client.websocket.connection.send(JSON.stringify(telegram));                
+            };
+
+            fr.readAsText(file.files[0]);
         }
     },
 

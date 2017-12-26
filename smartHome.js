@@ -21,6 +21,12 @@ var smartHome = {
 				state: null
 			},
 
+			updateFile: {
+				type: 'updateFile',
+				path: null,
+				content: null
+			},
+
 			response: {type: 'response', action: null, value: null}
 			
 		},

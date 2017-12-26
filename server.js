@@ -44,6 +44,21 @@ wsServer.on('request', function(request) {
 		var telegram = smartHome.net.telegram.parse(message.utf8Data);
 		switch(telegram.type) {
 
+			case 'fileToDevice':
+				var path = telegram.path;
+				var content = telegram.content;
+				var targetDevice = telegram.targetDevice;
+				var client = smartHome.sessions.clients[targetDevice];
+
+				var forwardedTelegram = smartHome.templates.messages.updateFile;
+				forwardedTelegram.path = path;
+				forwardedTelegram.content = content;
+
+				//smartHome.net.send(client, forwardedTelegram);
+				console.log(JSON.stringify(forwardedTelegram));
+
+				break;
+
 			case 'getRules':
 				smartHome.rules.getAllRules(function(rules) {
 					var response = smartHome.templates.messages.response;
