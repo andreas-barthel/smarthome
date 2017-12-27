@@ -12,11 +12,29 @@ var client = {
         }
     },
 
+    explorer: {
+        $filesDialog: null,
+        $filesTable: null,
+        $filesTableToolbar: null,
+
+        getFileList: function() {
+            var telegram = client.websocket.telegrams.getFileList;
+            telegram.targetDevice = client.devices.getSelectedMac();
+
+            client.websocket.connection.send(JSON.stringify(telegram));
+        }
+    },
+
     websocket: {
 
         connection: null,
 
         telegrams: {
+
+            getFileList: {
+                type: 'getFileList',
+                targetDevice: null
+            },
 
             fileToDevice: {
                 type: 'fileToDevice',
@@ -68,6 +86,29 @@ var client = {
                 }
             });
 
+            client.files.$filesDialog = $('#filesDialog').dialog({
+                autoOpen: false,
+                modal: true,
+                buttons: {
+                    Cancel: function() {
+                        client.files.$filesDialog.dialog('close');
+                    }
+                }
+            });
+        
+            client.files.$filesTable = $('#filesTable').jqGrid({
+                datatype: 'local',
+                colNames: [' ', 'Name', 'Size'],
+                colModel: [
+                    {name: 'icon'},
+                    {name: 'name'},
+                    {name: 'size'}
+                ],
+                rowNum: 20,
+                caption: 'File Explorer',
+                width: 800
+            });
+
             client.session.loginDialog = $('#loginDialog').dialog({
                 autoOpen: false,
                 modal: true,
@@ -111,7 +152,10 @@ var client = {
                 width: 1000,
                 toolbar: [true, 'top']
             });
-            $onlineDevicesTable.append('<button onclick="client.devices.reboot()">Reboot</button>');
+
+            var $onlineDevicesTableToolbar = $('#t_onlineDevicesTable');
+            $onlineDevicesTableToolbar.append('<button onclick="client.devices.reboot()">Reboot</button>');
+            $onlineDevicesTableToolbar.append('<button onlick="">File Explorer</button>');
 
             client.websocket.connection = new WebSocket('ws://192.168.178.169');
             client.websocket.connection.onopen = client.websocket.onOpen;

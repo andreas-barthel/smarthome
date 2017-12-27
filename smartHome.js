@@ -31,6 +31,10 @@ var smartHome = {
 				type: 'reboot'
 			},
 
+			getFileList: {
+				type: 'getFileList'
+			},
+
 			response: {type: 'response', action: null, value: null}
 			
 		},
