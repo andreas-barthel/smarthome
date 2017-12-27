@@ -161,7 +161,7 @@ var client = {
 
             var $onlineDevicesTableToolbar = $('#t_onlineDevicesTable');
             $onlineDevicesTableToolbar.append('<button onclick="client.devices.reboot()">Reboot</button>');
-            $onlineDevicesTableToolbar.append('<button onlick="client.explorer.open()">File Explorer</button>');
+            $onlineDevicesTableToolbar.append('<button onclick="client.explorer.open()">File Explorer</button>');
 
             client.websocket.connection = new WebSocket('ws://192.168.178.169');
             client.websocket.connection.onopen = client.websocket.onOpen;
