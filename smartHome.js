@@ -27,6 +27,10 @@ var smartHome = {
 				content: null
 			},
 
+			reboot: {
+				type: 'reboot'
+			},
+
 			response: {type: 'response', action: null, value: null}
 			
 		},

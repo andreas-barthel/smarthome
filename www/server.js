@@ -25,6 +25,11 @@ var client = {
                 targetDevice: null
             },
 
+            rebootDevice: {
+                type: 'rebootDevice',
+                targetDevice: null
+            },
+
             checkConfigState: {
                 type: 'checkConfigState'
             },
@@ -88,10 +93,12 @@ var client = {
                 ],
                 rowNum: 20,
                 caption: 'Rules',
-                width: 900
+                width: 1000
             });
 
-            $('#onlineDevicesTable').jqGrid({
+        var $onlineDevicesTable = $('#onlineDevicesTable');
+
+            $onlineDevicesTable.jqGrid({
                 datatype: 'local',
                 colNames: ['IP', 'MAC', 'Hw-Class'],
                 colModel: [
@@ -101,8 +108,10 @@ var client = {
                 ],
                 rowNum: 20,
                 caption: 'Online Devices',
-                width: 900
+                width: 1000,
+                toolbar: [true, 'top']
             });
+            $onlineDevicesTable.append('<button onclick="client.devices.reboot()">Reboot</button>');
 
             client.websocket.connection = new WebSocket('ws://192.168.178.169');
             client.websocket.connection.onopen = client.websocket.onOpen;
@@ -211,10 +220,25 @@ var client = {
     },
 
     devices: {
-        upload: function() {
+
+        getSelectedMac: function() {
             var deviceMacId = $('#onlineDevicesTable').jqGrid('getGridParam', 'selrow');
             var deviceMacRow = $('#onlineDevicesTable').jqGrid('getRowData', deviceMacId);
             var deviceMac = deviceMacRow.mac;
+
+            return deviceMac;
+        },
+
+        reboot: function() {
+            var deviceMac = client.devices.getSelectedMac();
+            var telegram = client.websocket.telegrams.rebootDevice;
+            telegram.targetDevice = deviceMac;
+
+            client.websocket.connection.send(JSON.stringify(telegram));
+        },
+
+        upload: function() {
+            var deviceMac = client.devices.getSelectedMac();
 
             var fileName = $('#uploadFileName').val();
 
