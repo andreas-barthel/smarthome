@@ -86,17 +86,17 @@ var client = {
                 }
             });
 
-            client.files.$filesDialog = $('#filesDialog').dialog({
+            client.explorer.$filesDialog = $('#filesDialog').dialog({
                 autoOpen: false,
                 modal: true,
                 buttons: {
                     Cancel: function() {
-                        client.files.$filesDialog.dialog('close');
+                        client.explorer.$filesDialog.dialog('close');
                     }
                 }
             });
         
-            client.files.$filesTable = $('#filesTable').jqGrid({
+            client.explorer.$filesTable = $('#filesTable').jqGrid({
                 datatype: 'local',
                 colNames: [' ', 'Name', 'Size'],
                 colModel: [
@@ -106,7 +106,8 @@ var client = {
                 ],
                 rowNum: 20,
                 caption: 'File Explorer',
-                width: 800
+                width: 800,
+                toolbar: [true, 'top']
             });
 
             client.session.loginDialog = $('#loginDialog').dialog({
