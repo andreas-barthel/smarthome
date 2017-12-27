@@ -22,6 +22,11 @@ var client = {
             telegram.targetDevice = client.devices.getSelectedMac();
 
             client.websocket.connection.send(JSON.stringify(telegram));
+        },
+
+        open: function() {
+            client.explorer.$filesDialog.dialog('open');
+            client.explorer.getFileList();
         }
     },
 
@@ -156,7 +161,7 @@ var client = {
 
             var $onlineDevicesTableToolbar = $('#t_onlineDevicesTable');
             $onlineDevicesTableToolbar.append('<button onclick="client.devices.reboot()">Reboot</button>');
-            $onlineDevicesTableToolbar.append('<button onlick="">File Explorer</button>');
+            $onlineDevicesTableToolbar.append('<button onlick="client.explorer.open()">File Explorer</button>');
 
             client.websocket.connection = new WebSocket('ws://192.168.178.169');
             client.websocket.connection.onopen = client.websocket.onOpen;
